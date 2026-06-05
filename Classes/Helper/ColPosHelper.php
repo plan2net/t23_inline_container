@@ -18,6 +18,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ColPosHelper {
 
+    public function __construct(
+        protected readonly ContainerFactory $containerFactory,
+        protected readonly Registry $tcaRegistry
+    ) {}
+
     /**
      * Function returns allowed colPos considering the maxItems in the col
      *
@@ -26,10 +31,9 @@ class ColPosHelper {
      * @return array
      * @throws \B13\Container\Domain\Factory\Exception
      */
-    public static function getAvailableColPos(int $containerUid, int $childUid = 0) : array {
-        $containerRegistry = GeneralUtility::makeInstance(Registry::class);
-        $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
-        $container = $containerFactory->buildContainer($containerUid);
+    public function getAvailableColPos(int $containerUid, int $childUid = 0) : array {
+        $containerRegistry = $this->tcaRegistry;
+        $container = $this->containerFactory->buildContainer($containerUid);
 
         $availableColumns = $containerRegistry->getAvailableColumns($container->getCType());
         foreach ($availableColumns as $key => $columnConfiguration) {

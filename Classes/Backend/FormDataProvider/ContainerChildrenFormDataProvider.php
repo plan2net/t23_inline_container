@@ -17,6 +17,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ContainerChildrenFormDataProvider implements FormDataProviderInterface
 {
 
+    public function __construct(private readonly ColPosHelper $colPosHelper) {}
+
     /**
      * @param array $result
      * @return array
@@ -44,7 +46,7 @@ class ContainerChildrenFormDataProvider implements FormDataProviderInterface
 
         if (!empty($parentRecord)) {
             $containerRegistry = GeneralUtility::makeInstance(Registry::class);
-            $availableColumns = ColPosHelper::getAvailableColPos($containerId, (int)$result['vanillaUid']);
+            $availableColumns = $this->colPosHelper->getAvailableColPos($containerId, (int)$result['vanillaUid']);
             if (!empty($availableColumns)) {
                 // Determine allowed colPos values and column config for selected column (if not empty)
                 $allowedColPosList = [];

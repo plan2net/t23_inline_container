@@ -9,14 +9,9 @@ namespace Team23\T23InlineContainer\Hooks;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use B13\Container\Domain\Factory\ContainerFactory;
-use B13\Container\Domain\Service\ContainerService;
-use B13\Container\Integrity\Database;
-use B13\Container\Tca\Registry;
+use B13\Container\Hooks\Datahandler\Database as DatahandlerDatabase;
 use Team23\T23InlineContainer\Integrity\Sorting;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 class DataHandler implements SingletonInterface
@@ -25,6 +20,11 @@ class DataHandler implements SingletonInterface
      * @var array<,int>
      */
     private $postProcessContainerUidList = [];
+
+    public function __construct(
+        protected readonly Sorting $sorting,
+        protected readonly DatahandlerDatabase $dataHandlerDatabase
+    ) {}
 
     /**
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
@@ -105,16 +105,10 @@ class DataHandler implements SingletonInterface
         // Make sure that container sorting is only update once per container element
         // => Only run sorting update after all operations have been finished
         if (!empty($this->postProcessContainerUidList) && $dataHandler->isOuterMostInstance()) {
-            $integrityDatabase = GeneralUtility::makeInstance(Database::class);
-            $dataHandlerDatabase = GeneralUtility::makeInstance(\B13\Container\Hooks\Datahandler\Database::class);
-            $registry = GeneralUtility::makeInstance(Registry::class);
-            $containerFactory = GeneralUtility::makeInstance(ContainerFactory::class);
-            $containerService = GeneralUtility::makeInstance(ContainerService::class);
-            $sorting = GeneralUtility::makeInstance(Sorting::class, $integrityDatabase, $registry, $containerFactory, $containerService);
             foreach ($this->postProcessContainerUidList as $containerRecordUid) {
-                $containerRecord = $dataHandlerDatabase->fetchOneRecord($containerRecordUid);
+                $containerRecord = $this->dataHandlerDatabase->fetchOneRecord($containerRecordUid);
                 if (!empty($containerRecord)) {
-                    $sorting->runForSingleContainer($containerRecord, $containerRecord['CType']);
+                    $this->sorting->runForSingleContainer($containerRecord, $containerRecord['CType']);
                 }
             }
         }

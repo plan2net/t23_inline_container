@@ -33,11 +33,17 @@ class ItemProcFunc {
      */
     protected $tcaRegistry;
 
-    public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry, BackendLayoutView $backendLayoutView)
+    /**
+     * @var ColPosHelper
+     */
+    protected $colPosHelper;
+
+    public function __construct(ContainerFactory $containerFactory, Registry $tcaRegistry, BackendLayoutView $backendLayoutView, ColPosHelper $colPosHelper)
     {
         $this->containerFactory = $containerFactory;
         $this->tcaRegistry = $tcaRegistry;
         $this->backendLayoutView = $backendLayoutView;
+        $this->colPosHelper = $colPosHelper;
     }
 
     public function colPos(array &$parameters): void
@@ -50,7 +56,7 @@ class ItemProcFunc {
                 $grid = $this->tcaRegistry->getGrid($cType);
                 if (is_array($grid)) {
                     $items = [];
-                    foreach (ColPosHelper::getAvailableColPos((int)$row['tx_container_parent'], (int) $row['uid']) as $colPos) {
+                    foreach ($this->colPosHelper->getAvailableColPos((int)$row['tx_container_parent'], (int) $row['uid']) as $colPos) {
                         $items[] = [
                             $colPos['name'],
                             $colPos['colPos'],

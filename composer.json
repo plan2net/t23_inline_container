@@ -5,11 +5,12 @@
     "homepage": "https://www.team23.de/",
     "license": "GPL-2.0-or-later",
     "require": {
-        "typo3/cms-core": "^11.5 || ^12.4 || ^13.4",
-        "b13/container": "^2.3 || ^3.1"
+        "php": "^8.2",
+        "typo3/cms-core": "^13.4",
+        "b13/container": "^4.0"
     },
     "suggest": {
-        "georgringer/news": "Most usefull application of this extension."
+        "georgringer/news": "^14.0"
     },
     "authors": [
         {

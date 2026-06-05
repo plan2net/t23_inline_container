@@ -11,6 +11,12 @@ services:
   Team23\T23InlineContainer\Tca\ItemProcFunc:
     public: true
 
+  Team23\T23InlineContainer\Backend\FormDataProvider\ContainerChildrenFormDataProvider:
+    public: true
+
+  Team23\T23InlineContainer\Hooks\DataHandler:
+    public: true
+
   Team23\T23InlineContainer\Listener\AddFieldToAllContainers:
     tags:
       - name: event.listener
