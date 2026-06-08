@@ -1,5 +1,6 @@
 {
     "name": "team23/t23-inline-container",
+    "version": "13.0.0",
     "description": "An extension to manage content elements inline in b13/container similar like possible in gridelementsteam/gridelements before.",
     "type": "typo3-cms-extension",
     "homepage": "https://www.team23.de/",
