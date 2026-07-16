@@ -81,20 +81,6 @@ class DataHandler implements SingletonInterface
         }
     }
 
-    public function processCmdmap_preProcess($command, $table, $id, $value, $pObj, $pasteUpdate): void
-    {
-        if (in_array($command, ['copy', 'localize']) && $table === 'tt_content') {
-            $GLOBALS['TCA']['tt_content']['columns']['tx_t23inlinecontainer_elements']['config']['type'] = 'none';
-        }
-    }
-
-    public function processCmdmap_postProcess($command, $table, $id, $value, $pObj, $pasteUpdate, $pasteDatamap): void
-    {
-        if (in_array($command, ['copy', 'localize']) && $table === 'tt_content') {
-            $GLOBALS['TCA']['tt_content']['columns']['tx_t23inlinecontainer_elements']['config']['type'] = 'tx_t23inlinecontainer_elements';
-        }
-    }
-
     /**
      * Fix container inline elements sorting after everything else has been processes
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
