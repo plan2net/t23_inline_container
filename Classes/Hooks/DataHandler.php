@@ -88,15 +88,50 @@ class DataHandler implements SingletonInterface
      */
     public function processDatamap_afterAllOperations(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
     {
+        foreach ($dataHandler->substNEWwithIDs as $newId => $uid) {
+            if (!empty($dataHandler->datamap['tt_content'][$newId]['tx_t23inlinecontainer_elements'])) {
+                $this->postProcessContainerUidList[(int)$uid] = (int)$uid;
+            }
+        }
+        $this->processContainerSorting($dataHandler);
+    }
+
+    private function processContainerSorting(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
+    {
         // Make sure that container sorting is only update once per container element
         // => Only run sorting update after all operations have been finished
         if (!empty($this->postProcessContainerUidList) && $dataHandler->isOuterMostInstance()) {
-            foreach ($this->postProcessContainerUidList as $containerRecordUid) {
+            $containerUids = $this->postProcessContainerUidList;
+            $this->postProcessContainerUidList = [];
+            foreach ($containerUids as $containerRecordUid) {
                 $containerRecord = $this->dataHandlerDatabase->fetchOneRecord($containerRecordUid);
-                if (!empty($containerRecord)) {
+                if (!empty($containerRecord['tx_t23inlinecontainer_elements'])) {
                     $this->sorting->runForSingleContainer($containerRecord, $containerRecord['CType']);
                 }
             }
         }
     }
+
+    public function processCmdmap_afterFinish(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
+    {
+        // Also handle nested moves so a container's descendants follow it before the next sibling.
+        foreach ($dataHandler->cmdmap['tt_content'] ?? [] as $uid => $commands) {
+            if (isset($commands['move'])) {
+                $record = $this->dataHandlerDatabase->fetchOneRecord((int)$uid);
+                if (!empty($record['tx_t23inlinecontainer_elements'])) {
+                    $this->sorting->runForSingleContainer($record, $record['CType']);
+                }
+            }
+        }
+        if (!$dataHandler->isOuterMostInstance()) {
+            return;
+        }
+
+        // Inline relations are remapped only after the nested copy datamaps have finished.
+        foreach (array_reverse($dataHandler->copyMappingArray_merged['tt_content'] ?? []) as $uid) {
+            $this->postProcessContainerUidList[(int)$uid] = (int)$uid;
+        }
+        $this->processContainerSorting($dataHandler);
+    }
+
 }

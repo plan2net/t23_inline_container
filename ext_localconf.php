@@ -10,6 +10,7 @@ defined('TYPO3') || die();
  */
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['tx-t23inlinecontainer'] = 'Team23\T23InlineContainer\Hooks\DataHandler';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['tx-t23inlinecontainer'] = 'Team23\T23InlineContainer\Hooks\DataHandler';
 
 // The tx_t23inlinecontainer_elements field turns container children into a native inline relation,
 // so TYPO3 core copies/moves/localizes them via tx_container_parent by itself. b13/container's own
