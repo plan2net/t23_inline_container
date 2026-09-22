@@ -88,6 +88,12 @@ class DataHandler implements SingletonInterface
      */
     public function processDatamap_afterAllOperations(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
     {
+        foreach ($dataHandler->substNEWwithIDs as $newId => $uid) {
+            if (!empty($dataHandler->datamap['tt_content'][$newId]['tx_t23inlinecontainer_elements'])) {
+                $this->postProcessContainerUidList[(int)$uid] = (int)$uid;
+            }
+        }
+
         // Make sure that container sorting is only update once per container element
         // => Only run sorting update after all operations have been finished
         if (!empty($this->postProcessContainerUidList) && $dataHandler->isOuterMostInstance()) {
@@ -96,6 +102,19 @@ class DataHandler implements SingletonInterface
                 if (!empty($containerRecord)) {
                     $this->sorting->runForSingleContainer($containerRecord, $containerRecord['CType']);
                 }
+            }
+        }
+    }
+
+    public function processCmdmap_afterFinish(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
+    {
+        if (!$dataHandler->isOuterMostInstance()) {
+            return;
+        }
+        foreach ($dataHandler->copyMappingArray_merged['tt_content'] ?? [] as $copiedUid) {
+            $containerRecord = $this->dataHandlerDatabase->fetchOneRecord((int)$copiedUid);
+            if (!empty($containerRecord['tx_t23inlinecontainer_elements'])) {
+                $this->sorting->runForSingleContainer($containerRecord, $containerRecord['CType']);
             }
         }
     }
