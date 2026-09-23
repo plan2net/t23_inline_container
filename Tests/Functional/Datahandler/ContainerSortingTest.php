@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Team23\T23InlineContainer\Tests\Functional\Datahandler;
 
+use B13\Container\Integrity\Sorting as ContainerSorting;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -48,6 +49,26 @@ final class ContainerSortingTest extends FunctionalTestCase
                 ['uid' => 3, 'parent' => 2],
                 ['uid' => $newChildUid, 'parent' => 2],
                 ['uid' => 4, 'parent' => 0],
+            ],
+            $this->contentInSortingOrder()
+        );
+    }
+
+    #[Test]
+    public function existingInterleavedChildrenAreSortedInsideTheirContainer(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/ContainerWithInterleavedChildren.csv');
+
+        $this->get(ContainerSorting::class)->run(false, false, 1);
+
+        self::assertSame(
+            [
+                ['uid' => 1, 'parent' => 0],
+                ['uid' => 2, 'parent' => 0],
+                ['uid' => 3, 'parent' => 2],
+                ['uid' => 5, 'parent' => 2],
+                ['uid' => 4, 'parent' => 0],
+                ['uid' => 6, 'parent' => 0],
             ],
             $this->contentInSortingOrder()
         );
