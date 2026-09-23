@@ -10,6 +10,9 @@
         "typo3/cms-core": "^13.4",
         "b13/container": "^4.0"
     },
+    "require-dev": {
+        "typo3/testing-framework": "^9.0"
+    },
     "suggest": {
         "georgringer/news": "^14.0"
     },
@@ -23,6 +26,11 @@
     "autoload": {
         "psr-4": {
             "Team23\\T23InlineContainer\\": "Classes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Team23\\T23InlineContainer\\Tests\\": "Tests/"
         }
     },
     "replace": {

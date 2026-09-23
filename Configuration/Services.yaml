@@ -17,6 +17,9 @@ services:
   Team23\T23InlineContainer\Hooks\DataHandler:
     public: true
 
+  B13\Container\Integrity\Sorting:
+    alias: Team23\T23InlineContainer\Integrity\Sorting
+
   Team23\T23InlineContainer\Listener\AddFieldToAllContainers:
     tags:
       - name: event.listener
