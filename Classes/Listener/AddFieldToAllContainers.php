@@ -18,6 +18,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class AddFieldToAllContainers {
     public function __invoke(AfterTcaCompilationEvent $event): void
     {
+        $GLOBALS['TCA'] = $event->getTca();
         $containerRegistry = GeneralUtility::makeInstance(\B13\Container\Tca\Registry::class);
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
